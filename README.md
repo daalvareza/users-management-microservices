@@ -37,5 +37,5 @@ Contains the followings:
 	- need to deploy at least 2 instances
 	- every time calling add/remove user request, all instances need to return the last state.
 	- this rotate can be managed randomly from the client.
-	- **BONUS**: create a router the routes between the instances.
+	- **BONUS**: create a router that routes between the instances.
 	- **BONUS**: use docker engine to run the service
