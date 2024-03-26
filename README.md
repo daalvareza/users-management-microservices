@@ -27,7 +27,7 @@ Contains the followings:
 	- **BONUS** - adding pagination of 3 cards per page.
 - Every time user adding/removing users the list is been updated.
 
-## Users Management Service
+## Users Management Service - Use Typescript with any framework you like
 - Service which exposes 3 endpoints:
 	- Add new user
 	- Delete User
@@ -35,7 +35,6 @@ Contains the followings:
 	
 - High Availability Requirements
 	- need to deploy at least 2 instances
-	- every time calling add/remove user request, all instances need to return the last state.
-	- this rotate can be managed randomly from the client.
-	- **BONUS**: create a router that routes between the instances.
-	- **BONUS**: use docker engine to run the service
+	- every time calling add/remove user request, all instances need to return the last state. (without using persistence storage)
+	- use ngnix for load balancing router the routes between the instances.
+	- use docker engine to run all services
