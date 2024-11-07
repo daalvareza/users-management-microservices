@@ -4,7 +4,7 @@ Hello,
 Welcome to Tictuk's FS implementation task.
 Please read the instructions, and do the BONUS after all rest of requirements were fulfilled.
  
-You need to build Users Management high availability platform.
+You need to build Users Management platform.
 The platform contains the followings:
 
 ## React Client SPA
@@ -33,7 +33,7 @@ Contains the followings:
 	- Delete User
 	- Fetch All
 	
-- High Availability Requirements
+- High Availability Requirements (BONUS)
 	- need to deploy at least 2 instances
 	- every time calling add/remove user request, all instances need to return the last state. (without using persistence storage)
 	- use ngnix for load balancing router the routes between the instances.
