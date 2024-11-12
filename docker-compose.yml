@@ -1,0 +1,46 @@
+version: '3'
+services:
+  # Router service (Nginx load balancer)
+  router:
+    build:
+      context: ./router
+      dockerfile: src/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./router/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - server1
+      - server2
+
+  # First instance of the server service
+  server1:
+    build:
+      context: ./server
+      dockerfile: src/Dockerfile
+    environment:
+      - INSTANCE_ID=server1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3001
+    expose:
+      - "3001"
+
+  # Second instance of the server service
+  server2:
+    build:
+      context: ./server
+      dockerfile: src/Dockerfile
+    environment:
+      - INSTANCE_ID=server2
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3002
+    expose:
+      - "3002"
+
+  # Redis for shared data between server instances
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"

@@ -1,19 +1,10 @@
-FROM node as builder
-# Create app directory
-WORKDIR /usr/src/app
-# Install app dependencies
-COPY package.json package-lock ./
-RUN npm i 
-COPY . .
-RUN npm build
+# Use the official Nginx image
+FROM nginx:alpine
 
-FROM node:slim
-# Create app directory
-WORKDIR /usr/src/app
-COPY package.json package-lock ./
-RUN npm ci --production
+# Copy the custom Nginx configuration into the container
+COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=builder /usr/src/app/dist ./dist
+# Expose port 80 for the Nginx load balancer
+EXPOSE 80
 
-EXPOSE 8080
-CMD [ "node", "dist/index.js" ]
+# Nginx will automatically start based on the default command in the image
