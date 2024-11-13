@@ -1,6 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { addUser, deleteUser, getUsers, IUser } from '../models/user/User';
-import { addAbortListener } from 'events';
 
 const router: Router = Router();
 const instanceId = process.env.INSTANCE_ID || 'unknown-instance';
