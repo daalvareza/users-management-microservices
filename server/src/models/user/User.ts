@@ -47,9 +47,7 @@ const validateUserData = async (userData: Partial<IUser>): Promise<string | null
     }
 
     // Unique email check
-    const users = await getUsers();
-    const emailExists = users.some(user => user.email === email);
-
+    const emailExists = await redisClient.json.get(`userByEmail:${email}`);
     if (emailExists) {
         return 'A user with this email already exists.';
     }
