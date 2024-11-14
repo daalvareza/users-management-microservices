@@ -14,15 +14,22 @@ const UsersTable = () => {
     const users = useSelector(selectUsers);
     const [isModalOpen, setModalOpen] = useState(false);
     const [page, setPage] = useState(1);
-    const usersPerPage = 3;
 
     useEffect(() => {
         dispatch(fetchUsersData());
     }, []);
 
-    const handleDeleteUser = (userId: string) => {
-        dispatch(removeUser(userId));
-    };
+    // Adjust page when users are updated
+    const usersPerPage = 3;
+    useEffect(() => {
+        const lastPage = Math.max(1, Math.ceil(users.length / usersPerPage));
+        if (page > lastPage) {
+            setPage(lastPage);
+        }
+    }, [users.length, page, usersPerPage]);
+
+    const paginatedUsers = users.slice((page - 1) * usersPerPage, page * usersPerPage);
+    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => setPage(value);
 
     const handleAddUser = async (newUser: IUserForm) => {
         try {
@@ -35,8 +42,9 @@ const UsersTable = () => {
         }
     };
 
-    const paginatedUsers = users.slice((page - 1) * usersPerPage, page * usersPerPage);
-    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => setPage(value);
+    const handleDeleteUser = (userId: string) => {
+        dispatch(removeUser(userId));
+    };
 
     return (
         <Paper>
@@ -82,7 +90,7 @@ const UsersTable = () => {
                 <Pagination
                     count={Math.ceil(users.length / usersPerPage)}
                     page={page}
-                    onChange={(event, val) => setPage(val)}
+                    onChange={handleChangePage}
                 />
             </PaginationContainer>
             <UserModal open={isModalOpen} onClose={() => setModalOpen(false)} onSave={handleAddUser}></UserModal>
