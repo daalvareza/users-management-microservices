@@ -7,11 +7,10 @@ const instanceId = process.env.INSTANCE_ID || 'unknown-instance';
 // Fetch all users
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const users = await getUsers();
-        const userList = users.sort((a : IUser, b: IUser) => a.lastName.localeCompare(b.lastName));
+        const usersList = await getUsers();
         res.json({
             instance: instanceId,
-            userList,
+            usersList,
         });
     } catch (error: any) {
         res.status(500).json({ error: error.message });

@@ -14,7 +14,10 @@ export interface IUser {
 
 export const getUsers = async (): Promise<IUser[]> => {
     const users = await redisClient.get(USERS_KEY);
-    return users ? JSON.parse(users) : [];
+    const parsedUsers: IUser[] = users ? JSON.parse(users) : [];
+
+    // Sorting by last name
+    return parsedUsers.sort((a: IUser, b: IUser) => a.lastName.localeCompare(b.lastName));
 };
 
 export const saveUsers = async (users: IUser[]): Promise<void> => {
@@ -26,28 +29,29 @@ const validateUserData = async (userData: Partial<IUser>): Promise<string | null
 
     // Required fields
     if (!firstName || !lastName || !email) {
-    return 'First name, last name, and email are required fields.';
+        return 'First name, last name, and email are required fields.';
     }
 
     // Type checks
     if (typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string') {
-    return 'First name, last name, and email must be strings.';
+        return 'First name, last name, and email must be strings.';
     }
 
     // Optional field checks
     if (description && typeof description !== 'string') {
-    return 'Description must be a string.';
+        return 'Description must be a string.';
     }
 
     if (description && description.length > 200) {
-    return 'Description cannot exceed 200 characters.';
+        return 'Description cannot exceed 200 characters.';
     }
 
     // Unique email check
     const users = await getUsers();
     const emailExists = users.some(user => user.email === email);
+
     if (emailExists) {
-    return 'A user with this email already exists.';
+        return 'A user with this email already exists.';
     }
 
     return null;
@@ -68,7 +72,5 @@ export const addUser = async (userData: Omit<IUser, 'id'>): Promise<IUser | stri
   
 
 export const deleteUser = async (id: string): Promise<void> => {
-    let users = await getUsers();
-    users = users.filter(user => user.id !== id);
-    await saveUsers(users);
+    await redisClient.json.del(USERS_KEY, `.users[?(@.id=='${id}')]`);
 };
